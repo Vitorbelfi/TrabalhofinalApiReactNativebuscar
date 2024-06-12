@@ -9,7 +9,7 @@ export default function Busca() {
 
     async function getUsuarios()
     {
-        await fetch('https://fakestoreapi.com/users', {
+        await fetch('http://10.139.75.40/api/Animais/GetAllAnimals', {
             method: 'GET',
             headers: {
               'content-type': 'application/json'

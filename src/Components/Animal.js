@@ -1,22 +1,16 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 
-export default function Produto({ title, image, description, price, category, rating }) {
+export default function Produto({ animalNome, animalFoto, animalRaca, animalTipo, animalCor,  animalSexo, animalObservacao, animalDtDesaparecimento, animalDtEncontro }) {
     return (
         <View style={css.container}>
             <View style={css.boxTitle}>
-                <View style={css.circleAvatar}></View>
-                <Text style={css.title}>{title}</Text>
+                <Text style={css.animalNome}>{animalNome}</Text>
             </View>
             <View style={css.boxImage}>
-                <Image source={{ uri: image }} style={css.imagem}/>
+                <Image source={{ uri: animalFoto }} style={css.animalFoto}/>
             </View>
-            <View style={css.descriptionBox}>
-                <Text style={css.descriptionText}>{description}</Text>
-            </View>
-            <View style={css.categoryBox}>
-                <Text style={css.categoryText}>{category}</Text>
-            </View>
+          
             
         </View>
     )
@@ -35,14 +29,8 @@ const css = StyleSheet.create({
         marginBottom: 10,
         paddingLeft: 5
     },
-    circleAvatar: {
-        width: 30,
-        height: 30,
-        borderRadius: 50,
-        backgroundColor: "white",
-        marginRight: 10
-    },
-    title: {
+    
+    animalNome: {
         color: "white",
         textAlign: "center"
     },
@@ -50,7 +38,7 @@ const css = StyleSheet.create({
         width: "100%",
         height: 390
     },
-    imagem: {
+    animalFoto: {
         width: "100%",
         height: "100%",
         resizeMode: "cover"

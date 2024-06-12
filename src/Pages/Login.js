@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 import { AuthContext } from '../Context/AuthContext';
 
 export default function Login() {
-
+                                    
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
@@ -13,10 +13,9 @@ export default function Login() {
        Login( email, senha );
     }
 
-
     return (
         <ScrollView contentContainerStyle={css.container}>
-            <Image source={require("../../assets/logo.png")} style={css.logo} />
+          <Text style={css.title}>Insira seus dados  </Text>
             <TextInput
                 inputMode="email"
                 placeholder="Email"
@@ -38,7 +37,7 @@ export default function Login() {
                 <Text style={css.forgotText}>Esqueceu a senha?</Text>
             </View>
             <TouchableOpacity style={css.btnLogin} onPress={RealizaLogin}>
-                <Text style={css.btnLoginText}>Log In</Text>
+                <Text style={css.btnLoginText}>Entrar</Text>
             </TouchableOpacity>
             {error &&
                 <View style={css.error}>
@@ -76,6 +75,12 @@ const css = StyleSheet.create({
         justifyContent: "flex-end",
         alignItems: "flex-end",
     },
+    title: {
+        fontSize: 36,
+        marginBottom: 20,
+        fontWeight: 'bold',
+        color: 'white',
+      },
     forgotText: {
         color: "#0195fd",
         fontWeight: "bold"
