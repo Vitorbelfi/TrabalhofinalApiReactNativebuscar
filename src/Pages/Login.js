@@ -1,112 +1,106 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../Context/AuthContext';
+import CadastroUsuario from './CadastroUsuario'
 
 export default function Login() {
-                                    
-    const [email, setEmail] = useState("");
-    const [senha, setSenha] = useState("");
 
-    const { Login, error } = useContext(AuthContext);
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [fazercadastro, setFazerCadastro] = useState(false);
 
-    function RealizaLogin() {
-       Login( email, senha );
-    }
+  const { Login, error } = useContext(AuthContext);
 
-    return (
-        <ScrollView contentContainerStyle={css.container}>
-          <Text style={css.title}>Insira seus dados  </Text>
-            <TextInput
-                inputMode="email"
-                placeholder="Email"
-                style={css.input}
-                value={email}
-                onChangeText={(digitado) => setEmail(digitado)}
-                placeholderTextColor="white"
-            />
-            <TextInput
-                inputMode="text"
-                placeholder="Password"
-                secureTextEntry={true}
-                style={css.input}
-                value={senha}
-                onChangeText={(digitado) => setSenha(digitado)}
-                placeholderTextColor="white"
-            />
-            <View style={css.forgot}>
-                <Text style={css.forgotText}>Esqueceu a senha?</Text>
-            </View>
-            <TouchableOpacity style={css.btnLogin} onPress={RealizaLogin}>
-                <Text style={css.btnLoginText}>Entrar</Text>
-            </TouchableOpacity>
-            {error &&
-                <View style={css.error}>
-                    <Text style={css.errorText}>Revise os campos. Tente novamente!</Text>
-                </View>
-            }
-        </ScrollView>
-    )
+  function FazerLogin() {
+    Login(email, senha);
+  }
+
+  if(fazercadastro) {
+    return <CadastroUsuario  handle={setFazerCadastro}/>
+  }
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        onChangeText={(digitado) => setEmail(digitado)}
+        value={email}
+        placeholder="Email do Usuário"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={(digitado) => setSenha(digitado)}
+        value={senha}
+        placeholder="Senha"
+        secureTextEntry={true}
+      />
+      <TouchableOpacity style={styles.bottomLinks} onPress={() => setFazerCadastro(true)}>
+        <Text style={styles.link}>Cadastre-se</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonContainer} onPress={FazerLogin}>
+        <Text style={styles.button}>Entrar</Text>
+      </TouchableOpacity>
+      <View style={styles.separator} />
+      {error &&
+      <View style={styles.error}>
+        <Text style={styles.errorText}>Email ou senha incorretos!</Text>
+    </View>
 }
-const css = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        alignContent: "center",
-        backgroundColor: "#191919"
-    },
-    logo: {
-        width: "60%",
-        resizeMode: "contain"
-    },
-    input: {
-        width: "90%",
-        height: 50,
-        borderRadius: 10,
-        marginBottom: 15,
-        padding: 15,
-        backgroundColor: "#262626",
-        color: "white"
-    },
-    forgot: {
-        width: "90%",
-        marginTop: 10,
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-    },
-    title: {
-        fontSize: 36,
-        marginBottom: 20,
-        fontWeight: 'bold',
-        color: 'white',
-      },
-    forgotText: {
-        color: "#0195fd",
-        fontWeight: "bold"
-    },
-    btnLogin: {
-        width: "90%",
-        height: 50,
-        borderWidth: 1,
-        borderRadius: 10,
-        marginTop: 30,
-        backgroundColor: "#0195fd"
-    },
-    btnLoginText: {
-        color: "white",
-        lineHeight: 45,
-        textAlign: "center",
-        fontSize: 15,
-        fontWeight: "bold"
-    },
-    error: {
-        width: "100%",
-        height: 50,
-        marginTop: 30
-    },
-    errorText: {
-        color: "white",
-        textAlign: "center"
-    }
+</View>
+);
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#191919',
+  },
+  logo: {
+    width: 200,
+    height: 100,
+    marginBottom: 20,
+    borderRadius: 10,
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    backgroundColor: '#f2f2f2',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  buttonContainer: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#007bff',
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    height: 40,
+    color: 'white',
+    fontWeight: 'bold',
+    top: 7,
+    fontSize: 18,
+  },
+  link: {
+    color: '#007bff',
+    textDecorationLine: 'underline',
+  },
+  bottomLinks: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 30,
+  },
+  errorText: {
+    color: 'red',
+    fontWeight: 'bold',
+    top: 15,
+  }
 });

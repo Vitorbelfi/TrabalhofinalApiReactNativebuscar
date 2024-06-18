@@ -1,212 +1,134 @@
-import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator, FlatList, Animated, TouchableOpacity, Text } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import AnimaisDesc from './AnimaisDesc';
+import Detalhes from './Detalhes';
+import NovaObservacao from './NovaObservacao';
 
 export default function Home() {
-    const [clientes, setClientes] = useState([]);
-    const [edicao, setEdicao] = useState(false);
-    const [clientId, setClientId] = useState("");
-    const [animalNome, setAnimalNome] = useState('');
-    const [animalFoto, setAnimalFoto] = useState();
-    const [clientEmail, setEmail] = useState('');
-    const [clientGenere, setGenere] = useState('');
-    const [animalCor, setAnimalCor] = useState('');
-    const [animalRaca, setAnimalRaca] = useState('');
-    const [animalTipo, setAnimalTipo] = useState('');
-    const [animalSexo, setAnimalSexo] = useState('');
-    const [animalDtDesaparecimento, setAnimalDtDesaparecimento] = useState('');
-    const [animalDtEncontro, setAnimalDtEncontro] = useState('');
+  const [animaisDesc, setAnimaisDesc] = useState([]);
+  const [error, setError] = useState(false);
+  const [detalhes, setDetalhes] = useState(false);
+  const [adicionarObservacao, setAdicionarObservacao] = useState(false);
+  const [animal, setAnimal] = useState(null);
 
-    async function getClientes() {
-        await fetch('http://10.139.75.40/api/Animais/GetAllAnimals', {
-            method: 'GET',
-            headers: {
-                'content-type': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(json => setClientes(json))
-        .catch(err => setError(true));
-    }
+  const animaisfiltrados = animaisDesc.filter(animal => animal.animalStatus === 1);
 
-    async function getCliente(id) {
-        await fetch('http://10.139.75.40/api/Animais/GetAnimalId/' + id, {
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })
-        .then(response => response.json())
-        .then(json => {
-            setClientId(id);      
-            setAnimalNome(json.animalNome);
-            setAnimalFoto(json.animalFoto);
-            setAnimalRaca(json.animalRaca);
-            setAnimalTipo(json.animalTipo);
-            setAnimalSexo(json.animalSexo);
-            setAnimalDtDesaparecimento(json.animalDtDesaparecimento);
-            setAnimalDtEncontro(json.animalDtEncontro);
-            setAnimalCor(json.animalCor);
-        });
-    }
+  const fade = useRef(new Animated.Value(0)).current;
 
-    async function editClient() {
-        await fetch('http://10.139.75.40/api/Client/UpdateClient/' + clientId, {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify({
-                clientId: clientId,
-                animalNome: animalNome,
-                clientEmail: clientEmail,
-                clientGenere: clientGenere,
-                animalCor: animalCor
-            })
-        })
-        .then((response) => response.json())
-        .then(json => console.log(json))
-        .catch(err => console.log(err));
-        getClientes();
-    }
+  useFocusEffect(
+    React.useCallback(() => {
+      fade.setValue(0);
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }, [fade])
+  );
 
-    useEffect(() => {
-        getClientes();
-    }, []);
+  async function getAnimaisDesc() {
+    await fetch('http://10.139.75.40/api/Animais/GetAllAnimals', {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(json => setAnimaisDesc(json))
+      .catch(err => setError(true));
+  }
 
-    useFocusEffect(
-        React.useCallback(() => {
-            getClientes();
-        }, [])
-    );
+  useEffect(() => {
+    getAnimaisDesc();
+  }, []);
 
-    return (
-        <View style={styles.container}>
-            
-            {edicao == false ?
-                <FlatList
-                    style={styles.flat}
-                    data={clientes}
-                    keyExtractor={(item) => item.animalId}
-                    renderItem={({ item }) => (
-                        
-                        <View style={styles.clientContainer}>
-                           
-                            <Image source={{ uri: item.animalFoto }} style={styles.image} />
-                            <Text style={styles.clientName}>Nome: <Text style={styles.clientData}>{item.animalNome}</Text></Text>
-                            <View style={styles.buttonContainer}>
+  function exibirdetalhes(item) {
+    setDetalhes(true);
+    setAnimal(item);
+  }
 
-                           
+  function fecharDetalhes() {
+    setDetalhes(false);
+    setAnimal(null);
+  }
 
-                                <TouchableOpacity style={styles.btnEdit} onPress={() => { setEdicao(true); getCliente(item.animalId) }}>
-                                    <Text style={styles.btnText}>DETALHES</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )}
-                />
-                :
-                <View style={styles.editar}>
-                    <View style={styles.clientContainer}>
-                        <Text style={styles.tituloinformacoes}>INFORMAÇÕES</Text>
-                        <Text style={styles.clientName}>
-                            Nome: <Text style={styles.clientData}>{animalNome}</Text>
-                        </Text>
-                        <Text style={styles.clientName}>
-                            Tipo: <Text style={styles.clientData}>{animalTipo}</Text>
-                        </Text>
-                        <Text style={styles.clientName}>
-                            Cor: <Text style={styles.clientData}>{animalCor}</Text>
-                        </Text>
-                        <Text style={styles.clientName}>
-                            Sexo: <Text style={styles.clientData}>{animalSexo}</Text>
-                        </Text>
-                        <Text style={styles.clientName}>
-                            Data desaparecimento: <Text style={styles.clientData}>{animalDtDesaparecimento}</Text>
-                        </Text>
-                        <Text style={styles.clientName}>
-                            Data Encontro: <Text style={styles.clientData}>{animalDtEncontro}</Text>
-                        </Text>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.btnSave} onPress={() => setEdicao(false)}>
-                                <Text style={styles.btnSaveText}>Voltar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.btnSave} onPress={() => setEdicao(false)}>
-                                <Text style={styles.btnSaveText}>Nova Observação</Text>
-                            </TouchableOpacity>
-                           
-                        </View>
-                    </View>
+  function irParaNovaObservacao() {
+    setAdicionarObservacao(true);
+  }
+
+  function voltarParaDetalhes() {
+    setAdicionarObservacao(false);
+  }
+
+  return (
+    <View style={styles.container}>
+      <Animated.View style={{ opacity: fade }}>
+        {adicionarObservacao ? (
+          <NovaObservacao handleVoltar={voltarParaDetalhes} animal={animal} />
+        ) : detalhes ? (
+          <Detalhes handleVoltar={fecharDetalhes} handleNovaObservacao={irParaNovaObservacao} animal={animal} />
+        ) : animaisDesc.length > 0 ? (
+          <FlatList
+            data={animaisfiltrados}
+            renderItem={({ item }) =>
+              <View style={styles.itemContainer}>
+                <AnimaisDesc animalFoto={item.animalFoto} animalNome={item.animalNome} />
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.button} onPress={() => exibirdetalhes(item)}>
+                    <Text style={styles.buttonText}>Detalhes</Text>
+                  </TouchableOpacity>
                 </View>
+              </View>
             }
-        </View>
-    );
+            keyExtractor={(item) => item.animalId.toString()}
+          />
+        ) : (
+          <ActivityIndicator size="large" color="#00ff00" />
+        )}
+      </Animated.View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-    },
-    titulohome:{
-        fontSize: 45,
-        fontWeight: 'bold',
-    },
-    tituloinformacoes:{
-        fontSize: 45,
-        fontWeight: 'bold',
-        color:'#999',
-        textDecorationLine: 'underline',
-    },
-    flat: {
-        marginTop: 10,
-    },
-    clientContainer: {
-        padding: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-    },
-    clientName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    clientData: {
-        fontWeight: 'normal',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10,
-    },
-    btnEdit: {
-        backgroundColor: '#28a7',
-        padding: 10,
-        borderRadius: 5,
-    },
-    btnText: {
-        color: '#fff',
-    },
-    editar: {
+        backgroundColor: 'transparent',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         padding: 20,
-    },
-    btnSave: {
-        backgroundColor: '#28a7',
-        padding: 10,
-        borderRadius: 5,
-    },
-    btnSaveText: {
-        color: '#fff',
-    },
-    image: {
-        width: 120,
-        height: 120,
+      },
+      itemContainer: {
+        backgroundColor: 'white',
         borderRadius: 50,
-      
-        width: 200,
-        height: 200,
-        borderWidth: 4, 
-        borderColor: '#000', 
-        borderRadius: 60, 
-        marginLeft: 57,
-    },
+        marginVertical: 10,
+        padding: 30,
+        alignItems: 'center',
+        width: '90%',
+        elevation: 5,  // Para sombra em Android
+        shadowColor: '#000',  // Para sombra em iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      buttonContainer: {
+        marginTop: 20,
+        justifyContent: 'center',
+        width: '90%',
+      },
+      button: {
+        backgroundColor: 'red',
+        borderRadius: 25,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '80%',
+      },
+      buttonText: {
+        fontSize: 18,
+        color: 'white',
+        fontWeight: 'bold',
+      },
+    
 });
