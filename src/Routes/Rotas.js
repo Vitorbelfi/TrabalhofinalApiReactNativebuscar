@@ -37,7 +37,8 @@ export default function Rotas() {
             component={Home}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <Ionicons name="home" color={color} size={25} />
+                <Ionicons name="logo-octocat" color={color} size={25} />
+          
               ),
             }}
           />
@@ -50,7 +51,7 @@ export default function Rotas() {
 const styles = StyleSheet.create({
   header: {
     height: 50,
-    backgroundColor: '#282828',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   tabBar: {
-    backgroundColor: '#282828',
+    backgroundColor: 'white',
     height: 50,
   },
 });

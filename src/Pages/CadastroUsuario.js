@@ -69,7 +69,7 @@ export default function Insert({handle}) {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#50524F',
+    backgroundColor: 'lightblue',
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
   input: {
     width: "90%",
     height: 55,
-    borderWidth: 2,
+   
     borderColor: "white",
     borderRadius: 5,
     padding: 10,
     color: "white",
     marginTop:10,
-    backgroundColor: '#323232'
+    backgroundColor: 'blue'
 },
 btn: {
   width: "90%",
@@ -93,7 +93,7 @@ btn: {
     borderRadius: 10,
     marginTop: 20,
     borderWidth: 0,
-    backgroundColor: "white",
+    backgroundColor: "red",
 },
 btnText: {
   color: "blue",

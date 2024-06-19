@@ -12,7 +12,7 @@ export default function Home() {
   const [adicionarObservacao, setAdicionarObservacao] = useState(false);
   const [animal, setAnimal] = useState(null);
 
-  const animaisfiltrados = animaisDesc.filter(animal => animal.animalStatus === 1);
+  const animaisfiltrados = animaisDesc.filter(animal => animal.animalStatus == 1);
 
   const fade = useRef(new Animated.Value(0)).current;
 
